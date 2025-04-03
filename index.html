@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>試管倒球遊戲 - 加載中...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #1e3a8a;
+        }
+        .loading {
+            margin: 20px 0;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>試管倒球遊戲</h1>
+        <p class="loading">正在加載遊戲，請稍候...</p>
+        <p>此頁面將在完整部署後自動替換為完整的遊戲。</p>
+        <p>如果頁面長時間未更新，請刷新頁面或稍後再試。</p>
+    </div>
+    <script>
+        // 自動重新加載頁面檢查更新
+        setTimeout(function() {
+            location.reload();
+        }, 10000); // 10秒後重新加載
+    </script>
+</body>
+</html>
