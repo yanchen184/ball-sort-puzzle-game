@@ -1,5 +1,7 @@
 import React from 'react';
 import { gameLevels } from '../utils/GameUtils';
+import { isSoundEnabled, toggleSound } from '../utils/SoundUtils';
+import { APP_VERSION } from '../config';
 
 /**
  * Game settings component
@@ -13,9 +15,20 @@ const Settings = ({
   showHints, 
   setShowHints 
 }) => {
+  const soundEnabled = isSoundEnabled();
+  
+  const handleSoundToggle = () => {
+    const newState = toggleSound();
+    // 強制重新渲染
+    setShowTimer(showTimer);
+  };
+  
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-full max-w-md">
-      <h2 className="text-xl font-bold mb-3 text-gray-800">遊戲設置</h2>
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-xl font-bold text-gray-800">遊戲設置</h2>
+        <span className="text-xs text-gray-500">版本 {APP_VERSION}</span>
+      </div>
       
       <div className="mb-4">
         <h3 className="font-semibold mb-2 text-gray-700">難度等級</h3>
@@ -60,6 +73,19 @@ const Settings = ({
           />
           <label htmlFor="show-hints" className="ml-2 text-gray-700">
             啟用提示功能
+          </label>
+        </div>
+        
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="sound-toggle"
+            checked={soundEnabled}
+            onChange={handleSoundToggle}
+            className="h-5 w-5 text-blue-500 rounded border-gray-300"
+          />
+          <label htmlFor="sound-toggle" className="ml-2 text-gray-700">
+            遊戲音效
           </label>
         </div>
       </div>
