@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BallSortGame from './components/BallSortGame';
 import FallingBalls from './components/FallingBalls';
+import { APP_VERSION } from './config';
 
 /**
  * Main Application Component
@@ -18,7 +19,10 @@ function App() {
       {/* Header */}
       <header className="bg-blue-600 text-white shadow-md relative z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold">試管倒球遊戲</h1>
+          <div className="flex items-center">
+            <h1 className="text-xl md:text-2xl font-bold mr-2">試管倒球遊戲</h1>
+            <span className="text-xs bg-blue-700 px-2 py-0.5 rounded">v{APP_VERSION}</span>
+          </div>
           <div className="flex space-x-2">
             <button 
               className="px-3 py-1 bg-white text-blue-600 rounded hover:bg-gray-100 font-medium text-sm"
@@ -54,7 +58,7 @@ function App() {
       
       {/* Introduction */}
       {showIntro && (
-        <div className="container mx-auto px-4 py-6 relative z-10">
+        <div className="container mx-auto px-4 py-6">
           <div className="bg-white rounded-lg shadow-md p-5 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">歡迎來到試管倒球遊戲！</h2>
             <p className="text-gray-700 mb-4">
@@ -70,6 +74,7 @@ function App() {
                   <li>計時器追蹤您的解題時間</li>
                   <li>自動保存遊戲進度</li>
                   <li>撤銷功能可回退錯誤步驟</li>
+                  <li>音效效果增強遊戲體驗</li>
                 </ul>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
@@ -103,7 +108,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-gray-800 text-gray-300 py-4 relative z-10">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; {new Date().getFullYear()} 試管倒球遊戲 | 由 React 開發</p>
+          <p>&copy; {new Date().getFullYear()} 試管倒球遊戲 v{APP_VERSION} | 由 React 開發</p>
           <p className="mt-1 text-sm">
             <a href="https://github.com/yanchen184/ball-sort-puzzle-game" className="text-blue-300 hover:text-blue-200" target="_blank" rel="noopener noreferrer">
               在 GitHub 上查看源代碼
