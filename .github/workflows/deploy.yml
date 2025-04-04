@@ -21,9 +21,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
+
+      - name: Create package-lock.json if not exists
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo '{}' > package-lock.json
+          fi
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build
