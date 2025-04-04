@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BallSortGame from './components/BallSortGame';
+import FallingBalls from './components/FallingBalls';
 
 /**
  * Main Application Component
@@ -7,11 +8,15 @@ import BallSortGame from './components/BallSortGame';
  */
 function App() {
   const [showIntro, setShowIntro] = useState(true);
+  const [showAnimations, setShowAnimations] = useState(true);
   
   return (
-    <div className="App min-h-screen bg-gray-100">
+    <div className="App min-h-screen bg-gray-100 relative">
+      {/* Background Animation */}
+      {showAnimations && <FallingBalls count={10} />}
+      
       {/* Header */}
-      <header className="bg-blue-600 text-white shadow-md">
+      <header className="bg-blue-600 text-white shadow-md relative z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">試管倒球遊戲</h1>
           <div className="flex space-x-2">
@@ -20,6 +25,12 @@ function App() {
               onClick={() => setShowIntro(!showIntro)}
             >
               {showIntro ? '隱藏介紹' : '遊戲介紹'}
+            </button>
+            <button
+              className="px-3 py-1 bg-white text-blue-600 rounded hover:bg-gray-100 font-medium text-sm"
+              onClick={() => setShowAnimations(!showAnimations)}
+            >
+              {showAnimations ? '關閉動畫' : '開啟動畫'}
             </button>
             <a 
               href="https://github.com/yanchen184/ball-sort-puzzle-game"
@@ -43,7 +54,7 @@ function App() {
       
       {/* Introduction */}
       {showIntro && (
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-6 relative z-10">
           <div className="bg-white rounded-lg shadow-md p-5 mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">歡迎來到試管倒球遊戲！</h2>
             <p className="text-gray-700 mb-4">
@@ -85,12 +96,12 @@ function App() {
       )}
       
       {/* Main Game */}
-      <main className="container mx-auto px-4 pb-8">
+      <main className="container mx-auto px-4 pb-8 relative z-10">
         <BallSortGame />
       </main>
       
       {/* Footer */}
-      <footer className="bg-gray-800 text-gray-300 py-4">
+      <footer className="bg-gray-800 text-gray-300 py-4 relative z-10">
         <div className="container mx-auto px-4 text-center">
           <p>&copy; {new Date().getFullYear()} 試管倒球遊戲 | 由 React 開發</p>
           <p className="mt-1 text-sm">
