@@ -9,9 +9,34 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 24px;
         }
 
         /* 試管和球的樣式 */
+        .tubes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
         .tube {
             position: relative;
             display: flex;
@@ -25,7 +50,7 @@
             border: 2px solid #ccc;
             border-top: 0;
             cursor: pointer;
-            margin: 10px;
+            transition: border-color 0.2s;
         }
 
         .tube.selected {
@@ -38,23 +63,15 @@
             height: 48px;
             border-radius: 50%;
             margin: 4px;
+            transition: transform 0.3s;
         }
 
-        /* 遊戲容器 */
-        .game-container {
+        /* 控制面板 */
+        .controls {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .tubes-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .stats {
@@ -63,33 +80,39 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 16px;
+            min-width: 300px;
             text-align: center;
         }
 
-        .win-message {
-            margin-top: 8px;
-            padding: 8px;
-            background-color: #ecfdf5;
-            border: 1px solid #d1fae5;
-            border-radius: 4px;
+        .moves {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .moves-count {
+            color: #3b82f6;
+            font-weight: 700;
         }
 
         .buttons {
             display: flex;
             gap: 16px;
+            margin-top: 16px;
         }
 
         button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 500;
-            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
         .reset-button {
             background-color: #3b82f6;
+            color: white;
         }
 
         .reset-button:hover {
@@ -98,55 +121,142 @@
 
         .history-button {
             background-color: #6b7280;
+            color: white;
         }
 
         .history-button:hover {
             background-color: #4b5563;
         }
 
-        .rules {
-            margin-top: 24px;
+        /* 獲勝消息 */
+        .win-message {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
             padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .win-text {
+            color: #047857;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .win-steps {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .win-rating {
+            font-weight: 500;
+        }
+
+        /* 規則展示 */
+        .rules {
             background-color: white;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
             max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .rules h2 {
+            color: #1e3a8a;
+            margin-top: 0;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .rules ul {
+            padding-left: 20px;
+        }
+
+        .rules li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .tubes-container {
+                gap: 10px;
+            }
+            
+            .tube {
+                width: 50px;
+                height: 200px;
+            }
+            
+            .ball {
+                width: 38px;
+                height: 38px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tube {
+                width: 40px;
+                height: 180px;
+            }
+            
+            .ball {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="root">
-        <!-- React 應用將在這裡掛載 -->
-        <div class="game-container">
-            <h1>試管倒球遊戲</h1>
-            
+    <div class="container">
+        <h1>試管倒球遊戲</h1>
+        
+        <div class="controls">
             <div class="stats">
-                <p class="moves">移動次數: <span id="moves">0</span></p>
-            </div>
-            
-            <div class="tubes-container" id="tubes-container">
-                <!-- 試管將動態生成 -->
+                <p class="moves">移動次數: <span class="moves-count" id="moves-count">0</span></p>
+                <div id="win-container"></div>
             </div>
             
             <div class="buttons">
                 <button class="reset-button" id="reset-button">重新開始遊戲</button>
-            </div>
-            
-            <div class="rules">
-                <h2>遊戲規則：</h2>
-                <ul>
-                    <li>點擊一根試管選擇它，再點擊另一根試管將球移動過去</li>
-                    <li>只能移動試管最上方的球</li>
-                    <li>球只能移動到空試管或頂部有相同顏色球的試管</li>
-                    <li>獲勝條件：每根試管中裝的要麼是同種顏色的球，要麼是空的</li>
-                </ul>
+                <button class="history-button" id="history-button" style="display: none;">查看移動記錄</button>
             </div>
         </div>
+        
+        <div class="tubes-container" id="tubes-container"></div>
+        
+        <div class="rules">
+            <h2>遊戲規則</h2>
+            <ul>
+                <li>點擊一根試管選擇它，再點擊另一根試管將球移動過去</li>
+                <li>只能移動試管最上方的球</li>
+                <li>球只能移動到空試管或頂部有相同顏色球的試管</li>
+                <li>獲勝條件：每根試管中裝的要麼是同種顏色的球，要麼是空的</li>
+            </ul>
+        </div>
     </div>
-    
+
     <script>
-        // 顏色定義
-        const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
+        // 遊戲設置
+        const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
+        const TUBES_COUNT = 8;
+        const BALLS_PER_COLOR = 5;
+        const MAX_BALLS_PER_TUBE = 5;
         
         // 遊戲狀態
         let tubes = [];
@@ -155,17 +265,29 @@
         let moveHistory = [];
         let gameWon = false;
         
-        // DOM 元素
+        // DOM元素
         const tubesContainer = document.getElementById('tubes-container');
+        const movesCounter = document.getElementById('moves-count');
         const resetButton = document.getElementById('reset-button');
-        const movesDisplay = document.getElementById('moves');
+        const historyButton = document.getElementById('history-button');
+        const winContainer = document.getElementById('win-container');
         
         // 初始化遊戲
-        function initializeGame() {
-            // 創建所有球的陣列
+        function initGame() {
+            // 重置遊戲狀態
+            tubes = [];
+            selectedTube = null;
+            moves = 0;
+            moveHistory = [];
+            gameWon = false;
+            movesCounter.textContent = '0';
+            winContainer.innerHTML = '';
+            historyButton.style.display = 'none';
+            
+            // 生成所有球
             const allBalls = [];
-            colors.forEach(color => {
-                for (let i = 0; i < 5; i++) {
+            COLORS.forEach(color => {
+                for (let i = 0; i < BALLS_PER_COLOR; i++) {
                     allBalls.push(color);
                 }
             });
@@ -176,19 +298,21 @@
                 [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
             }
             
-            // 分配到試管中
-            tubes = Array(8).fill().map(() => []);
-            let tubeIndex = 0;
-            
-            for (let i = 0; i < allBalls.length; i++) {
-                if (tubes[tubeIndex].length < 5) {
-                    tubes[tubeIndex].push(allBalls[i]);
-                } else {
-                    tubeIndex++;
-                    tubes[tubeIndex].push(allBalls[i]);
-                }
+            // 初始化試管
+            for (let i = 0; i < TUBES_COUNT; i++) {
+                tubes.push([]);
             }
             
+            // 分配球到試管
+            let tubeIndex = 0;
+            allBalls.forEach(ball => {
+                if (tubes[tubeIndex].length >= MAX_BALLS_PER_TUBE) {
+                    tubeIndex++;
+                }
+                tubes[tubeIndex].push(ball);
+            });
+            
+            // 渲染試管
             renderTubes();
         }
         
@@ -201,57 +325,76 @@
                 tubeElement.className = `tube ${selectedTube === index ? 'selected' : ''}`;
                 tubeElement.dataset.index = index;
                 
+                // 添加球
                 tube.forEach(color => {
-                    const ballElement = document.createElement('div');
-                    ballElement.className = 'ball';
-                    ballElement.style.backgroundColor = color;
-                    tubeElement.appendChild(ballElement);
+                    const ball = document.createElement('div');
+                    ball.className = 'ball';
+                    ball.style.backgroundColor = color;
+                    tubeElement.appendChild(ball);
                 });
                 
+                // 綁定點擊事件
                 tubeElement.addEventListener('click', () => handleTubeClick(index));
+                
                 tubesContainer.appendChild(tubeElement);
             });
         }
         
         // 處理試管點擊
-        function handleTubeClick(tubeIndex) {
+        function handleTubeClick(index) {
             if (gameWon) return;
             
+            // 如果沒有選中試管，選擇當前試管
             if (selectedTube === null) {
-                if (tubes[tubeIndex].length > 0) {
-                    selectedTube = tubeIndex;
+                if (tubes[index].length > 0) {
+                    selectedTube = index;
                     renderTubes();
                 }
-            } else {
-                const fromTube = tubes[selectedTube];
-                const toTube = tubes[tubeIndex];
-                
-                if (
-                    selectedTube !== tubeIndex &&
-                    toTube.length < 5 &&
-                    (toTube.length === 0 || fromTube[fromTube.length - 1] === toTube[toTube.length - 1])
-                ) {
-                    const ball = fromTube.pop();
-                    toTube.push(ball);
-                    
-                    const moveRecord = {
-                        from: selectedTube,
-                        to: tubeIndex,
-                        color: ball,
-                        moveNumber: moves + 1
-                    };
-                    
-                    moves++;
-                    moveHistory.push(moveRecord);
-                    movesDisplay.textContent = moves;
-                    
+            } 
+            // 如果已經選中試管，嘗試移動球
+            else {
+                // 如果點擊同一根試管，取消選擇
+                if (selectedTube === index) {
                     selectedTube = null;
                     renderTubes();
+                    return;
+                }
+                
+                const sourceTube = tubes[selectedTube];
+                const targetTube = tubes[index];
+                
+                // 檢查移動是否合法
+                if (
+                    targetTube.length < MAX_BALLS_PER_TUBE && 
+                    (targetTube.length === 0 || targetTube[targetTube.length - 1] === sourceTube[sourceTube.length - 1])
+                ) {
+                    // 移動球
+                    const ball = sourceTube.pop();
+                    targetTube.push(ball);
                     
+                    // 記錄移動
+                    moves++;
+                    movesCounter.textContent = moves;
+                    moveHistory.push({
+                        from: selectedTube,
+                        to: index,
+                        color: ball
+                    });
+                    
+                    // 顯示歷史按鈕
+                    historyButton.style.display = 'block';
+                    
+                    // 取消選擇
+                    selectedTube = null;
+                    
+                    // 檢查是否獲勝
                     if (checkWin()) {
                         showWinMessage();
                     }
+                    
+                    renderTubes();
                 } else {
+                    // 移動不合法，取消選擇
                     selectedTube = null;
                     renderTubes();
                 }
@@ -261,68 +404,72 @@
         // 檢查是否獲勝
         function checkWin() {
             for (const tube of tubes) {
+                // 空試管是可以的
                 if (tube.length === 0) continue;
                 
+                // 檢查試管中的球是否全部相同顏色
                 const firstColor = tube[0];
-                const allSameColor = tube.every(ball => ball === firstColor);
-                
-                if (!allSameColor) return false;
+                if (!tube.every(ball => ball === firstColor)) {
+                    return false;
+                }
             }
             
             gameWon = true;
             return true;
         }
         
-        // 顯示獲勝訊息
+        // 顯示獲勝信息
         function showWinMessage() {
-            const statsDiv = document.querySelector('.stats');
+            const winMessage = document.createElement('div');
+            winMessage.className = 'win-message';
             
-            const winDiv = document.createElement('div');
-            winDiv.className = 'win-message';
+            const winText = document.createElement('p');
+            winText.className = 'win-text';
+            winText.textContent = '恭喜！您獲勝了！';
             
-            const message = document.createElement('p');
-            message.className = 'win-text';
-            message.innerHTML = `<strong>恭喜！您獲勝了！</strong><br>總共用了 <b>${moves}</b> 步完成遊戲！`;
+            const winSteps = document.createElement('p');
+            winSteps.className = 'win-steps';
+            winSteps.innerHTML = `您用了 <strong>${moves}</strong> 步完成遊戲！`;
             
-            const rating = document.createElement('p');
+            const winRating = document.createElement('p');
+            winRating.className = 'win-rating';
+            
             if (moves <= 50) {
-                rating.textContent = '太厲害了！非常高效的解法！';
-                rating.style.color = '#047857';
+                winRating.textContent = '太厲害了！非常高效的解法！';
+                winRating.style.color = '#047857'; // 綠色
             } else if (moves <= 100) {
-                rating.textContent = '做得好！相當不錯的成績！';
-                rating.style.color = '#1d4ed8';
+                winRating.textContent = '做得好！相當不錯的成績！';
+                winRating.style.color = '#1d4ed8'; // 藍色
             } else {
-                rating.textContent = '完成了遊戲！再接再厲，挑戰更少步數！';
-                rating.style.color = '#b45309';
+                winRating.textContent = '完成了遊戲！再接再厲，挑戰更少步數！';
+                winRating.style.color = '#b45309'; // 橙色
             }
             
-            winDiv.appendChild(message);
-            winDiv.appendChild(rating);
-            statsDiv.appendChild(winDiv);
+            winMessage.appendChild(winText);
+            winMessage.appendChild(winSteps);
+            winMessage.appendChild(winRating);
+            
+            winContainer.appendChild(winMessage);
         }
         
-        // 重置遊戲
-        function resetGame() {
-            tubes = [];
-            selectedTube = null;
-            moves = 0;
-            moveHistory = [];
-            gameWon = false;
-            movesDisplay.textContent = '0';
+        // 顯示移動歷史
+        function showMoveHistory() {
+            if (moveHistory.length === 0) return;
             
-            const winMessage = document.querySelector('.win-message');
-            if (winMessage) {
-                winMessage.remove();
-            }
+            let historyText = `移動歷史 (共${moves}步):\n`;
+            moveHistory.forEach((move, index) => {
+                historyText += `第${index + 1}步: 從試管${move.from + 1}移動${move.color}球到試管${move.to + 1}\n`;
+            });
             
-            initializeGame();
+            alert(historyText);
         }
         
         // 事件監聽器
-        resetButton.addEventListener('click', resetGame);
+        resetButton.addEventListener('click', initGame);
+        historyButton.addEventListener('click', showMoveHistory);
         
-        // 開始遊戲
-        initializeGame();
+        // 啟動遊戲
+        initGame();
     </script>
 </body>
 </html>
