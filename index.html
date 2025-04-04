@@ -3,51 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>試管倒球遊戲 - 加載中...</title>
+    <title>試管倒球遊戲</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             background-color: #f0f2f5;
+        }
+
+        /* 試管和球的樣式 */
+        .tube {
+            position: relative;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            justify-content: flex-start;
+            width: 64px;
+            height: 256px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 0 0 24px 24px;
+            border: 2px solid #ccc;
+            border-top: 0;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .tube.selected {
+            border: 4px solid #3b82f6;
+            border-top: 0;
+        }
+
+        .ball {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 4px;
+        }
+
+        /* 遊戲容器 */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .tubes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stats {
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
             text-align: center;
         }
-        .container {
-            max-width: 600px;
-            padding: 20px;
+
+        .win-message {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #ecfdf5;
+            border: 1px solid #d1fae5;
+            border-radius: 4px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            color: white;
+        }
+
+        .reset-button {
+            background-color: #3b82f6;
+        }
+
+        .reset-button:hover {
+            background-color: #2563eb;
+        }
+
+        .history-button {
+            background-color: #6b7280;
+        }
+
+        .history-button:hover {
+            background-color: #4b5563;
+        }
+
+        .rules {
+            margin-top: 24px;
+            padding: 16px;
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #1e3a8a;
-        }
-        .loading {
-            margin: 20px 0;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>試管倒球遊戲</h1>
-        <p class="loading">正在加載遊戲，請稍候...</p>
-        <p>此頁面將在完整部署後自動替換為完整的遊戲。</p>
-        <p>如果頁面長時間未更新，請刷新頁面或稍後再試。</p>
+    <div id="root">
+        <!-- React 應用將在這裡掛載 -->
+        <div class="game-container">
+            <h1>試管倒球遊戲</h1>
+            
+            <div class="stats">
+                <p class="moves">移動次數: <span id="moves">0</span></p>
+            </div>
+            
+            <div class="tubes-container" id="tubes-container">
+                <!-- 試管將動態生成 -->
+            </div>
+            
+            <div class="buttons">
+                <button class="reset-button" id="reset-button">重新開始遊戲</button>
+            </div>
+            
+            <div class="rules">
+                <h2>遊戲規則：</h2>
+                <ul>
+                    <li>點擊一根試管選擇它，再點擊另一根試管將球移動過去</li>
+                    <li>只能移動試管最上方的球</li>
+                    <li>球只能移動到空試管或頂部有相同顏色球的試管</li>
+                    <li>獲勝條件：每根試管中裝的要麼是同種顏色的球，要麼是空的</li>
+                </ul>
+            </div>
+        </div>
     </div>
+    
     <script>
-        // 自動重新加載頁面檢查更新
-        setTimeout(function() {
-            location.reload();
-        }, 10000); // 10秒後重新加載
+        // 顏色定義
+        const colors = ['red', 'blue', 'green', 'yellow', 'purple'];
+        
+        // 遊戲狀態
+        let tubes = [];
+        let selectedTube = null;
+        let moves = 0;
+        let moveHistory = [];
+        let gameWon = false;
+        
+        // DOM 元素
+        const tubesContainer = document.getElementById('tubes-container');
+        const resetButton = document.getElementById('reset-button');
+        const movesDisplay = document.getElementById('moves');
+        
+        // 初始化遊戲
+        function initializeGame() {
+            // 創建所有球的陣列
+            const allBalls = [];
+            colors.forEach(color => {
+                for (let i = 0; i < 5; i++) {
+                    allBalls.push(color);
+                }
+            });
+            
+            // 隨機打亂球的順序
+            for (let i = allBalls.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
+            }
+            
+            // 分配到試管中
+            tubes = Array(8).fill().map(() => []);
+            let tubeIndex = 0;
+            
+            for (let i = 0; i < allBalls.length; i++) {
+                if (tubes[tubeIndex].length < 5) {
+                    tubes[tubeIndex].push(allBalls[i]);
+                } else {
+                    tubeIndex++;
+                    tubes[tubeIndex].push(allBalls[i]);
+                }
+            }
+            
+            renderTubes();
+        }
+        
+        // 渲染試管和球
+        function renderTubes() {
+            tubesContainer.innerHTML = '';
+            
+            tubes.forEach((tube, index) => {
+                const tubeElement = document.createElement('div');
+                tubeElement.className = `tube ${selectedTube === index ? 'selected' : ''}`;
+                tubeElement.dataset.index = index;
+                
+                tube.forEach(color => {
+                    const ballElement = document.createElement('div');
+                    ballElement.className = 'ball';
+                    ballElement.style.backgroundColor = color;
+                    tubeElement.appendChild(ballElement);
+                });
+                
+                tubeElement.addEventListener('click', () => handleTubeClick(index));
+                tubesContainer.appendChild(tubeElement);
+            });
+        }
+        
+        // 處理試管點擊
+        function handleTubeClick(tubeIndex) {
+            if (gameWon) return;
+            
+            if (selectedTube === null) {
+                if (tubes[tubeIndex].length > 0) {
+                    selectedTube = tubeIndex;
+                    renderTubes();
+                }
+            } else {
+                const fromTube = tubes[selectedTube];
+                const toTube = tubes[tubeIndex];
+                
+                if (
+                    selectedTube !== tubeIndex &&
+                    toTube.length < 5 &&
+                    (toTube.length === 0 || fromTube[fromTube.length - 1] === toTube[toTube.length - 1])
+                ) {
+                    const ball = fromTube.pop();
+                    toTube.push(ball);
+                    
+                    const moveRecord = {
+                        from: selectedTube,
+                        to: tubeIndex,
+                        color: ball,
+                        moveNumber: moves + 1
+                    };
+                    
+                    moves++;
+                    moveHistory.push(moveRecord);
+                    movesDisplay.textContent = moves;
+                    
+                    selectedTube = null;
+                    renderTubes();
+                    
+                    if (checkWin()) {
+                        showWinMessage();
+                    }
+                } else {
+                    selectedTube = null;
+                    renderTubes();
+                }
+            }
+        }
+        
+        // 檢查是否獲勝
+        function checkWin() {
+            for (const tube of tubes) {
+                if (tube.length === 0) continue;
+                
+                const firstColor = tube[0];
+                const allSameColor = tube.every(ball => ball === firstColor);
+                
+                if (!allSameColor) return false;
+            }
+            
+            gameWon = true;
+            return true;
+        }
+        
+        // 顯示獲勝訊息
+        function showWinMessage() {
+            const statsDiv = document.querySelector('.stats');
+            
+            const winDiv = document.createElement('div');
+            winDiv.className = 'win-message';
+            
+            const message = document.createElement('p');
+            message.className = 'win-text';
+            message.innerHTML = `<strong>恭喜！您獲勝了！</strong><br>總共用了 <b>${moves}</b> 步完成遊戲！`;
+            
+            const rating = document.createElement('p');
+            if (moves <= 50) {
+                rating.textContent = '太厲害了！非常高效的解法！';
+                rating.style.color = '#047857';
+            } else if (moves <= 100) {
+                rating.textContent = '做得好！相當不錯的成績！';
+                rating.style.color = '#1d4ed8';
+            } else {
+                rating.textContent = '完成了遊戲！再接再厲，挑戰更少步數！';
+                rating.style.color = '#b45309';
+            }
+            
+            winDiv.appendChild(message);
+            winDiv.appendChild(rating);
+            statsDiv.appendChild(winDiv);
+        }
+        
+        // 重置遊戲
+        function resetGame() {
+            tubes = [];
+            selectedTube = null;
+            moves = 0;
+            moveHistory = [];
+            gameWon = false;
+            movesDisplay.textContent = '0';
+            
+            const winMessage = document.querySelector('.win-message');
+            if (winMessage) {
+                winMessage.remove();
+            }
+            
+            initializeGame();
+        }
+        
+        // 事件監聽器
+        resetButton.addEventListener('click', resetGame);
+        
+        // 開始遊戲
+        initializeGame();
     </script>
 </body>
 </html>
