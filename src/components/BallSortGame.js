@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Settings from './Settings';
 import Timer from './Timer';
+import WinAnimation from './WinAnimation';
 import { 
   gameLevels, 
   initializeGame, 
@@ -32,6 +33,7 @@ const BallSortGame = () => {
   const [hint, setHint] = useState(null);
   const [timerReset, setTimerReset] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
+  const [showWinAnimation, setShowWinAnimation] = useState(false);
   
   // Get current level settings
   const currentLevelSettings = gameLevels[currentLevel];
@@ -48,6 +50,7 @@ const BallSortGame = () => {
     setHint(null);
     setTimerReset(prev => prev + 1);
     setGameStarted(true);
+    setShowWinAnimation(false);
     
     // Clear saved game
     localStorage.removeItem('ballSortGameState');
@@ -83,6 +86,20 @@ const BallSortGame = () => {
       });
     }
   }, [tubes, moves, moveHistory, gameWon, currentLevel, gameStarted]);
+
+  // Show win animation when game is won
+  useEffect(() => {
+    if (gameWon) {
+      setShowWinAnimation(true);
+      
+      // Hide animation after 5 seconds
+      const timer = setTimeout(() => {
+        setShowWinAnimation(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [gameWon]);
   
   /**
    * Handle tube click event
@@ -174,7 +191,13 @@ const BallSortGame = () => {
   };
   
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center p-4 bg-gray-100 min-h-screen relative">
+      {/* Victory animation */}
+      <WinAnimation 
+        colors={currentLevelSettings.colors} 
+        show={showWinAnimation} 
+      />
+      
       <h1 className="text-3xl font-bold mb-2 text-gray-800">試管倒球遊戲</h1>
       
       {/* Game Controls and Info Bar */}
