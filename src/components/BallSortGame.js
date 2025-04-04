@@ -11,6 +11,11 @@ import {
   saveGameState, 
   loadGameState 
 } from '../utils/GameUtils';
+import { 
+  initSounds, 
+  playSound 
+} from '../utils/SoundUtils';
+import { APP_VERSION } from '../config';
 
 /**
  * Ball Sort Puzzle game component
@@ -38,10 +43,16 @@ const BallSortGame = () => {
   // Get current level settings
   const currentLevelSettings = gameLevels[currentLevel];
   
+  // Initialize sounds
+  useEffect(() => {
+    initSounds();
+  }, []);
+  
   /**
    * Reset the game with current settings
    */
   const resetGame = useCallback(() => {
+    playSound('reset');
     setTubes(initializeGame(currentLevelSettings));
     setSelectedTube(null);
     setMoves(0);
@@ -90,6 +101,7 @@ const BallSortGame = () => {
   // Show win animation when game is won
   useEffect(() => {
     if (gameWon) {
+      playSound('win');
       setShowWinAnimation(true);
       
       // Hide animation after 5 seconds
@@ -111,6 +123,9 @@ const BallSortGame = () => {
     
     // Clear any hint when user makes a move
     if (hint) setHint(null);
+    
+    // Play click sound
+    playSound('click');
     
     // If no tube is selected, select the current tube (if not empty)
     if (selectedTube === null) {
@@ -135,6 +150,9 @@ const BallSortGame = () => {
         const ball = newTubes[selectedTube].pop();
         newTubes[tubeIndex].push(ball);
         
+        // Play move sound
+        playSound('move');
+        
         // Record move in history
         const moveRecord = {
           from: selectedTube,
@@ -151,11 +169,13 @@ const BallSortGame = () => {
         // Check if game is won
         if (checkWin(newTubes)) {
           setGameWon(true);
+          playSound('complete');
           // Remove saved game on win
           localStorage.removeItem('ballSortGameState');
         }
       } else {
         // Move is invalid, deselect tube
+        playSound('invalidMove');
         setSelectedTube(null);
       }
     }
@@ -166,6 +186,8 @@ const BallSortGame = () => {
    */
   const undoLastMove = () => {
     if (moveHistory.length === 0 || gameWon) return;
+    
+    playSound('undo');
     
     // Get the last move
     const lastMove = moveHistory[moveHistory.length - 1];
@@ -186,6 +208,7 @@ const BallSortGame = () => {
    * Show hint for next move
    */
   const showNextHint = () => {
+    playSound('hint');
     const nextHint = getHint(tubes, currentLevelSettings.ballsPerColor);
     setHint(nextHint);
   };
@@ -205,7 +228,10 @@ const BallSortGame = () => {
         <div className="flex gap-2 items-center">
           <button 
             className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center"
-            onClick={() => setShowSettings(!showSettings)}
+            onClick={() => {
+              playSound('click');
+              setShowSettings(!showSettings);
+            }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -357,6 +383,7 @@ const BallSortGame = () => {
           <button 
             className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center"
             onClick={() => {
+              playSound('click');
               // Show move history
               alert(`移動歷史 (共${moves}步):\n${moveHistory.map(m => 
                 `第${m.moveNumber}步: 從試管${m.from + 1}移動${m.color}球到試管${m.to + 1}`
@@ -373,7 +400,10 @@ const BallSortGame = () => {
       
       {/* Game Rules */}
       <div className="mt-2 p-4 bg-white rounded-lg shadow-md w-full max-w-4xl">
-        <h2 className="text-lg font-bold mb-2 text-gray-800">遊戲規則：</h2>
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-bold text-gray-800">遊戲規則：</h2>
+          <span className="text-xs text-gray-500">v{APP_VERSION}</span>
+        </div>
         <ul className="list-disc pl-5 space-y-1">
           <li>點擊一根試管選擇它，再點擊另一根試管將球移動過去</li>
           <li>只能移動試管最上方的球</li>
