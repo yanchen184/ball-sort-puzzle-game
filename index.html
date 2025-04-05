@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>試管倒球遊戲</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    h2 {
+      color: #3498db;
+      margin-top: 30px;
+    }
+    .counter {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    .rules {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .rules li {
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>試管倒球遊戲</h1>
+  
+  <div class="counter">
+    移動次數: <span id="moves">0</span>
+  </div>
+  
+  <div class="rules">
+    <h2>遊戲規則</h2>
+    <ul>
+      <li>點擊一根試管選擇它,再點擊另一根試管將球移動過去</li>
+      <li>只能移動試管最上方的球</li>
+      <li>球只能移動到空試管或頂部有相同顏色球的試管</li>
+      <li>獲勝條件:每根試管中裝的要麼是同種顏色的球,要麼是空的</li>
+    </ul>
+  </div>
+  
+  <div style="text-align: center;">
+    <button id="restart">重新開始</button>
+  </div>
+
+  <script>
+    // 簡單的次數統計功能
+    let moveCount = 0;
+    const movesDisplay = document.getElementById('moves');
+    const restartButton = document.getElementById('restart');
+    
+    restartButton.addEventListener('click', function() {
+      moveCount = 0;
+      movesDisplay.textContent = moveCount;
+      alert('遊戲已重置！');
+    });
+    
+    // 這裡將來會加載完整的 React 應用
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('頁面成功加載！完整的 React 版本即將推出。');
+    });
+  </script>
+</body>
+</html>
