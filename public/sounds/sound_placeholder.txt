@@ -1,0 +1,17 @@
+音效文件佔位符
+
+這個文件夾需要包含以下MP3格式音效文件：
+
+1. click.mp3 - 點擊音效
+2. move.mp3 - 移動球音效
+3. invalidMove.mp3 - 無效移動音效
+4. complete.mp3 - 完成關卡音效
+5. win.mp3 - 勝利音效
+6. hint.mp3 - 提示音效
+7. undo.mp3 - 撤銷操作音效
+8. reset.mp3 - 重置遊戲音效
+
+請從Freesound、OpenGameArt或Pixabay等免費音效資源網站下載適合的音效，
+並將其重命名後放在此文件夾中。
+
+音效文件應該保持在50KB以下大小，以確保良好的加載性能。
