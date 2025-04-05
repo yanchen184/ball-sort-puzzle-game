@@ -12,9 +12,11 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>試管倒球遊戲</title>
-    <!-- 開始: GitHub Pages 路由處理 -->
+    
+    <!-- 開始：GitHub Pages 上的 SPA 路由處理 -->
     <script type="text/javascript">
-      // 檢查是否有重定向請求
+      // GitHub Pages 上的單頁應用重定向處理
+      // 原始碼: https://github.com/rafgraph/spa-github-pages
       (function(l) {
         if (l.search[1] === '/' ) {
           var decoded = l.search.slice(1).split('&').map(function(s) { 
@@ -26,7 +28,7 @@
         }
       }(window.location))
     </script>
-    <!-- 結束: GitHub Pages 路由處理 -->
+    <!-- 結束：GitHub Pages 上的 SPA 路由處理 -->
   </head>
   <body>
     <noscript>您需要啟用JavaScript才能運行此應用程序。</noscript>
