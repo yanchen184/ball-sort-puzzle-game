@@ -11,10 +11,13 @@
       margin: 0 auto;
       padding: 20px;
       line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
     }
     h1 {
       text-align: center;
       color: #2c3e50;
+      margin-bottom: 30px;
     }
     h2 {
       color: #3498db;
@@ -24,12 +27,16 @@
       text-align: center;
       font-size: 24px;
       margin: 20px 0;
+      padding: 15px;
+      background-color: #e8f4fc;
+      border-radius: 8px;
     }
     .rules {
       background-color: #f5f5f5;
       padding: 15px;
-      border-radius: 5px;
+      border-radius: 8px;
       margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .rules li {
       margin-bottom: 10px;
@@ -42,10 +49,39 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 16px;
-      margin: 10px 0;
+      margin: 10px 5px;
+      transition: background-color 0.3s;
     }
     button:hover {
       background-color: #2980b9;
+    }
+    .game-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .tube {
+      width: 60px;
+      height: 200px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 2px solid #333;
+      border-radius: 0 0 20px 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column-reverse;
+      overflow: hidden;
+    }
+    .ball {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin: 2px auto;
+    }
+    .buttons {
+      text-align: center;
+      margin: 20px 0;
     }
   </style>
 </head>
@@ -56,35 +92,95 @@
     移動次數: <span id="moves">0</span>
   </div>
   
+  <div class="game-area" id="gameArea">
+    <!-- 試管將在這裡動態生成 -->
+  </div>
+  
+  <div class="buttons">
+    <button id="restart">重新開始</button>
+    <button id="undo">撤銷</button>
+    <button id="hint">提示</button>
+  </div>
+  
   <div class="rules">
     <h2>遊戲規則</h2>
     <ul>
-      <li>點擊一根試管選擇它,再點擊另一根試管將球移動過去</li>
+      <li>點擊一根試管選擇它，再點擊另一根試管將球移動過去</li>
       <li>只能移動試管最上方的球</li>
       <li>球只能移動到空試管或頂部有相同顏色球的試管</li>
-      <li>獲勝條件:每根試管中裝的要麼是同種顏色的球,要麼是空的</li>
+      <li>獲勝條件：每根試管中裝的要麼是同種顏色的球，要麼是空的</li>
     </ul>
-  </div>
-  
-  <div style="text-align: center;">
-    <button id="restart">重新開始</button>
   </div>
 
   <script>
-    // 簡單的次數統計功能
-    let moveCount = 0;
-    const movesDisplay = document.getElementById('moves');
-    const restartButton = document.getElementById('restart');
-    
-    restartButton.addEventListener('click', function() {
-      moveCount = 0;
-      movesDisplay.textContent = moveCount;
-      alert('遊戲已重置！');
-    });
-    
-    // 這裡將來會加載完整的 React 應用
+    // 簡單的遊戲邏輯
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('頁面成功加載！完整的 React 版本即將推出。');
+      let moveCount = 0;
+      const movesDisplay = document.getElementById('moves');
+      const restartButton = document.getElementById('restart');
+      const undoButton = document.getElementById('undo');
+      const hintButton = document.getElementById('hint');
+      const gameArea = document.getElementById('gameArea');
+      
+      // 顏色配置
+      const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22', '#1abc9c', '#34495e'];
+      
+      // 創建試管
+      const tubes = 8; // 總試管數
+      const ballsPerTube = 4; // 每個試管的球數量
+      
+      // 生成遊戲區域
+      function generateGameArea() {
+        gameArea.innerHTML = '';
+        
+        // 創建試管
+        for (let i = 0; i < tubes; i++) {
+          const tube = document.createElement('div');
+          tube.className = 'tube';
+          tube.id = 'tube-' + i;
+          
+          // 前6個試管填充球
+          if (i < 6) {
+            for (let j = 0; j < ballsPerTube; j++) {
+              const ball = document.createElement('div');
+              ball.className = 'ball';
+              // 簡單地分配顏色（實際遊戲需要更複雜的邏輯）
+              const colorIndex = Math.floor(i / 2) + j % 3;
+              ball.style.backgroundColor = colors[colorIndex % colors.length];
+              tube.appendChild(ball);
+            }
+          }
+          
+          tube.addEventListener('click', function() {
+            // 簡化的點擊處理邏輯
+            console.log('Clicked tube', i);
+          });
+          
+          gameArea.appendChild(tube);
+        }
+      }
+      
+      restartButton.addEventListener('click', function() {
+        moveCount = 0;
+        movesDisplay.textContent = moveCount;
+        generateGameArea();
+        alert('遊戲已重置！');
+      });
+      
+      undoButton.addEventListener('click', function() {
+        if (moveCount > 0) {
+          moveCount--;
+          movesDisplay.textContent = moveCount;
+          alert('已撤銷上一步操作');
+        }
+      });
+      
+      hintButton.addEventListener('click', function() {
+        alert('提示功能即將推出...');
+      });
+      
+      // 初始化遊戲
+      generateGameArea();
     });
   </script>
 </body>
