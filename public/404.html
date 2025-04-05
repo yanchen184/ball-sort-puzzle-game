@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <title>試管倒球遊戲</title>
   <script type="text/javascript">
-    // 單頁應用重定向到首頁
+    // 這個腳本由 React 社區推薦，處理 GitHub Pages 上的 SPA 路由問題
+    // 說明: https://github.com/rafgraph/spa-github-pages
     var pathSegmentsToKeep = 1;
+
     var l = window.location;
     l.replace(
       l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
@@ -14,9 +16,11 @@
       (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
       l.hash
     );
+
   </script>
 </head>
 <body>
-  <h1>重定向中...</h1>
+  <h2>重定向中...</h2>
+  <p>如果您沒有被自動重定向，請<a href="https://yanchen184.github.io/ball-sort-puzzle-game/">點擊這裡</a>返回首頁。</p>
 </body>
 </html>
