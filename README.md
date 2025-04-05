@@ -2,6 +2,8 @@
 
 一個使用React開發的試管倒球益智遊戲。玩家需要通過移動試管中的彩色球，將所有同顏色的球歸類到同一試管中。
 
+**當前版本**: v1.1.0
+
 ## 在線演示
 
 [試管倒球遊戲](https://yanchen184.github.io/ball-sort-puzzle-game/)
@@ -17,6 +19,7 @@
 - 遊戲計時器，記錄解題時間
 - 移動步數計數和記錄
 - 精美的視覺效果和動畫
+- 遊戲音效，增強遊戲體驗
 - 響應式設計，適用於不同尺寸的設備
 
 ## 遊戲規則
@@ -31,6 +34,7 @@
 - React.js - 前端框架
 - TailwindCSS - 樣式和UI
 - LocalStorage - 本地數據存儲
+- HTML5 Audio API - 音效播放
 
 ## 遊戲技巧
 
@@ -69,23 +73,38 @@
 
 ```
 src/
-├── components/          # React組件
-│   ├── BallSortGame.js  # 主要遊戲組件
-│   ├── FallingBalls.js  # 背景動畫效果
-│   ├── Settings.js      # 遊戲設置組件
-│   ├── Timer.js         # 計時器組件
-│   └── WinAnimation.js  # 勝利動畫效果
-├── utils/               # 工具函數
-│   └── GameUtils.js     # 遊戲邏輯工具
-├── App.js               # 應用程序入口
-└── index.js             # React入口點
+├── components/           # React組件
+│   ├── BallSortGame.js   # 主要遊戲組件
+│   ├── FallingBalls.js   # 背景動畫效果
+│   ├── Settings.js       # 遊戲設置組件
+│   ├── Timer.js          # 計時器組件
+│   └── WinAnimation.js   # 勝利動畫效果
+├── utils/                # 工具函數
+│   ├── GameUtils.js      # 遊戲邏輯工具
+│   └── SoundUtils.js     # 音效工具函數
+├── config.js             # 配置文件和常量
+├── App.js                # 應用程序入口
+└── index.js              # React入口點
 ```
+
+## 版本歷史
+
+### v1.1.0 (當前版本)
+- 添加音效功能
+- 添加版本號顯示
+- 優化動畫效果
+- 修復已知問題
+
+### v1.0.0
+- 初始版本發布
+- 基本遊戲功能
+- 不同難度級別
+- 自動保存功能
 
 ## 未來計劃
 
 - 添加更多難度級別
 - 實現自定義關卡功能
-- 添加音效
 - 支持多語言
 - 排行榜系統
 - 添加教程模式
