@@ -12,6 +12,21 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>試管倒球遊戲</title>
+    <!-- 開始: GitHub Pages 路由處理 -->
+    <script type="text/javascript">
+      // 檢查是否有重定向請求
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+    <!-- 結束: GitHub Pages 路由處理 -->
   </head>
   <body>
     <noscript>您需要啟用JavaScript才能運行此應用程序。</noscript>
